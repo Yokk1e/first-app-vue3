@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent, PropType, computed, toRefs } from "vue";
 
 import { BoardCastForm } from "../forms/BoardCastForm";
 import ButtonVue from "@/components/Button.vue";
@@ -15,38 +15,20 @@ export default defineComponent({
   components: { ButtonVue, TextInputVue },
   props: {
     form: {
-      type: Object as () => BoardCastForm,
+      type: Object as PropType<BoardCastForm>,
       default: () => {
         return { header: "", detail: "" };
       },
     },
   },
+  emits: ["submit", "update:form"],
+  setup(props, { emit }) {
+    const { detail, header } = toRefs(props.form);
+    function submit() {
+      emit("submit");
+    }
 
-  emits: ["submit", "input"],
-  computed: {
-    header: {
-      get(): any {
-        return (this as any).form.header;
-      },
-      set(value: any) {
-        return this.$emit("input", { ...(this as any).form, header: value });
-      },
-    },
-    detail: {
-      get(): any {
-        return (this as any).form.detail;
-      },
-      set(value: any) {
-        return this.$emit("input", { ...(this as any).form, detail: value });
-      },
-    },
-  },
-  methods: {
-    submit() {
-      console.log("test", this);
-
-      this.$emit("submit");
-    },
+    return { submit, detail, header };
   },
 });
 </script>
