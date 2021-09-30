@@ -1,46 +1,84 @@
 <template>
   <div class="mb-4">
-    <label class="block text-gray-700 text-sm font-bold mb-2" :for="label">
-      {{ label }}
-    </label>
-    <input
-      :value="value"
-      :id="label"
-      :placeholder="placeholder"
-      @input="$emit('update:value', $event.target.value)"
-      class="
-        shadow
-        appearance-none
-        border
-        rounded
-        w-full
-        py-2
-        px-3
-        text-gray-700
-        leading-tight
-        focus:outline-none focus:shadow-outline
-      "
-      type="text"
-    />
+    <div class="col-span-6">
+      <label :for="name" class="block text-sm font-medium text-gray-700">{{
+        label
+      }}</label>
+      <input
+        :name="name"
+        :id="name"
+        :type="type"
+        :value="inputValue"
+        :placeholder="placeholder"
+        @input="handleChange"
+        @blur="handleBlur"
+        class="
+          shadow
+          appearance-none
+          border
+          rounded
+          w-full
+          py-2
+          px-3
+          text-gray-700
+          leading-tight
+          focus:outline-none focus:shadow-outline
+        "
+      />
+    </div>
+
+    <p class="text-red-500" v-show="errorMessage || meta.valid">
+      {{ errorMessage }}
+    </p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useField } from "vee-validate";
 
 export default defineComponent({
   props: {
+    type: {
+      type: String,
+      default: "text",
+    },
     value: {
       type: String,
+      default: "",
     },
-    placeholder: {
+    name: {
       type: String,
+      required: true,
     },
     label: {
       type: String,
+      required: true,
+    },
+    placeholder: {
+      type: String,
+      default: "",
     },
   },
-  emits: ["update:value"],
+  setup(props) {
+    const {
+      value: inputValue,
+      errorMessage,
+      handleBlur,
+      handleChange,
+      meta,
+    } = useField(props.name, undefined, {
+      initialValue: props.value,
+    });
+
+    return {
+      handleChange,
+      handleBlur,
+      errorMessage,
+      inputValue,
+      meta,
+    };
+  },
 });
 </script>
 
