@@ -1,6 +1,6 @@
 import { ref, computed, reactive } from "vue";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { string } from "yup";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
+import { httpClient } from "../clients/HTTPClient";
 
 export const useFetch = (config: AxiosRequestConfig, skip?: boolean) => {
   const data = ref();
@@ -11,7 +11,7 @@ export const useFetch = (config: AxiosRequestConfig, skip?: boolean) => {
   const fetch = async () => {
     loading.value = true;
     try {
-      const result = await axios.request({
+      const result = await httpClient.request({
         ...config,
       });
       response.value = result;
