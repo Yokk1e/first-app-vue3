@@ -1,21 +1,22 @@
 <template>
-  <Form @submit="onSubmit" :validation-schema="schema">
+  <form @submit="onSubmit">
     <TextInputVue label="Header" placeholder="header" name="header" />
     <TextInputVue label="Detail" placeholder="detail" name="detail" />
-    <ButtonVue label="Submit" type="submit" />
-  </Form>
+    <ButtonVue label="Submit" />
+  </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import { Form } from "vee-validate";
+import { defineComponent, PropType, onMounted } from "vue";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
-import { BoardCastForm } from "../forms/BoardCastForm";
 import ButtonVue from "@/components/Button.vue";
 import TextInputVue from "@/components/TextInput.vue";
+import { BoardcastForm } from "@/domians/boardcast";
+import { useCreateBoardcast } from "@/applications/createBoardcast";
 
 export default defineComponent({
-  components: { ButtonVue, TextInputVue, Form },
+  components: { ButtonVue, TextInputVue },
   props: {
     state: {
       type: String as PropType<"CREATE" | "UPDATE">,
@@ -29,29 +30,41 @@ export default defineComponent({
       detail: yup.string().required().min(8),
     });
 
-    async function create(form: BoardCastForm) {
+    const { validate, values, resetForm, handleSubmit } =
+      useForm<BoardcastForm>({
+        validationSchema: schema,
+      });
+
+    onMounted(() => {
+      // initdata form api
+    });
+
+    const { submitCreateBoardCast, isLoading, isSuccess } =
+      useCreateBoardcast();
+
+    async function create() {
       try {
-        console.log(form);
+        submitCreateBoardCast(values);
         emit("success");
       } catch (error) {
         console.log(error);
       }
     }
-    async function update(form: BoardCastForm) {
+    async function update() {
       try {
-        console.log(form);
+        console.log(values);
         emit("success");
       } catch (error) {
         console.log(error);
       }
     }
-    async function onSubmit(form: BoardCastForm) {
+    const onSubmit = handleSubmit(async () => {
       if (props.state === "CREATE") {
-        await create(form);
+        await create();
       } else if (props.state === "UPDATE") {
-        await update(form);
+        await update();
       }
-    }
+    });
 
     return { onSubmit, schema };
   },

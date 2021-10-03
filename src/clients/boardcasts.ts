@@ -1,18 +1,22 @@
-import { BoardCastForm } from "@/features/boardcast/forms/BoardCastForm";
-import { UpdateBoardCastForm } from "@/features/boardcast/forms/UpdateBoardCastForm";
-import { Boardcast } from "@/features/boardcast/models/Boardcast";
-import { httpClient } from "./httpClient";
+import { BoardcastForm, Boardcast } from "@/domians/boardcast";
+import { httpClient } from "./HTTPClient";
 
-export const postBoardCast = async (form: BoardCastForm) => {
-  await httpClient.post<Boardcast>(`/boardcasts`, form);
+export const postBoardCast = async (
+  form: BoardcastForm
+): Promise<Boardcast> => {
+  const { data } = await httpClient.post<Boardcast>(`/boardcasts`, form);
+  return data;
 };
 
-export const patchBoardCast = async (id: string, form: UpdateBoardCastForm) => {
+export const patchBoardCast = async (
+  id: number,
+  form: BoardcastForm
+): Promise<Boardcast> => {
   const { data } = await httpClient.patch<Boardcast>(`/boardcasts/${id}`, form);
   return data;
 };
 
-export const getBoardCastById = async (id: string) => {
+export const getBoardCastById = async (id: string): Promise<Boardcast> => {
   const { data } = await httpClient.get<Boardcast>(`/boardcasts/${id}`);
   return data;
 };
@@ -24,7 +28,7 @@ export const getBoardCastById = async (id: string) => {
 //   return data;
 // };
 
-export const deleteBoardCastById = async (id: string) => {
+export const deleteBoardCastById = async (id: string): Promise<Boardcast> => {
   const { data } = await httpClient.delete<Boardcast>(`/boardcasts/${id}`);
   return data;
 };

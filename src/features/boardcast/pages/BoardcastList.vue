@@ -16,7 +16,6 @@ import { defineComponent, ref } from "vue";
 import BoardcastEditorVue from "../components/BoardcastEditor.vue";
 import ModalForm from "@/components/ModalForm.vue";
 import Button from "@/components/Button.vue";
-import { BoardCastForm } from "../forms/BoardCastForm";
 
 export default defineComponent({
   components: { ModalForm, Button, BoardcastEditorVue },
